@@ -165,9 +165,9 @@ En este proyecto se provocó el error al intentar insertar una misión con un id
 
 ## Script DDL
 
-El script DDL fue desarrollado para crear todas las tablas necesarias del sistema Agencia Espacial.
+El siguiente script DDL fue desarrollado para crear la estructura completa de la base de datos del sistema Agencia Espacial.
 
-Incluye:
+Se implementaron:
 - PRIMARY KEY
 - FOREIGN KEY
 - NOT NULL
@@ -175,44 +175,173 @@ Incluye:
 - CHECK
 - ON DELETE CASCADE
 
-Archivo:
 ```sql
-ddl.sql
+CREATE TABLE NAVE (
+    id_nave NUMBER PRIMARY KEY,
+    nombre VARCHAR2(50) NOT NULL UNIQUE,
+    modelo VARCHAR2(50) NOT NULL,
+    capacidad NUMBER NOT NULL,
+    estado VARCHAR2(20) NOT NULL,
+    CONSTRAINT chk_nave_capacidad CHECK (capacidad > 0),
+    CONSTRAINT chk_nave_estado CHECK (estado IN ('Disponible', 'Mision', 'Mantenimiento'))
+);
+
+CREATE TABLE ASTRONAUTA (
+    id_astronauta NUMBER PRIMARY KEY,
+    nombre VARCHAR2(50) NOT NULL,
+    apellido VARCHAR2(50) NOT NULL,
+    nacionalidad VARCHAR2(30) NOT NULL,
+    especialidad VARCHAR2(40) NOT NULL,
+    estado VARCHAR2(20) NOT NULL,
+    CONSTRAINT chk_astronauta_estado CHECK (estado IN ('Activo', 'Inactivo'))
+);
+
+CREATE TABLE ROL_TRIPULACION (
+    id_rol NUMBER PRIMARY KEY,
+    nombre VARCHAR2(30) NOT NULL UNIQUE,
+    descripcion VARCHAR2(100) NOT NULL
+);
+
+CREATE TABLE MISION (
+    id_mision NUMBER PRIMARY KEY,
+    nombre VARCHAR2(60) NOT NULL UNIQUE,
+    fecha_inicio DATE NOT NULL,
+    fecha_fin DATE NOT NULL,
+    objetivo VARCHAR2(120) NOT NULL,
+    id_nave NUMBER NOT NULL,
+    CONSTRAINT chk_mision_fechas CHECK (fecha_fin >= fecha_inicio),
+    CONSTRAINT fk_mision_nave
+        FOREIGN KEY (id_nave)
+        REFERENCES NAVE(id_nave)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE TRIPULACION (
+    id_tripulacion NUMBER PRIMARY KEY,
+    id_mision NUMBER NOT NULL,
+    id_astronauta NUMBER NOT NULL,
+    id_rol NUMBER NOT NULL,
+    CONSTRAINT fk_tripulacion_mision
+        FOREIGN KEY (id_mision)
+        REFERENCES MISION(id_mision)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_tripulacion_astronauta
+        FOREIGN KEY (id_astronauta)
+        REFERENCES ASTRONAUTA(id_astronauta)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_tripulacion_rol
+        FOREIGN KEY (id_rol)
+        REFERENCES ROL_TRIPULACION(id_rol)
+        ON DELETE CASCADE,
+    CONSTRAINT uq_tripulacion UNIQUE (id_mision, id_astronauta, id_rol)
+);
 ```
 
 ---
 
 ## Script DML
 
-El script DML contiene la inserción de registros válidos para probar el funcionamiento de la base de datos.
+El siguiente script DML contiene registros válidos para probar el funcionamiento de la base de datos.
 
-También incluye:
+También se incluyen ejemplos de:
 - INSERT válidos
 - UPDATE seguro
 - DELETE con integridad referencial
 - Error ORA-02291
 
-Archivo:
 ```sql
-dml.sql
+INSERT INTO NAVE VALUES (1, 'Astra-01', 'Explorer X', 6, 'Disponible');
+INSERT INTO NAVE VALUES (2, 'Astra-02', 'Explorer Z', 4, 'Disponible');
+
+INSERT INTO ASTRONAUTA VALUES (1, 'Carlos', 'Perez', 'Ecuatoriana', 'Piloto', 'Activo');
+INSERT INTO ASTRONAUTA VALUES (2, 'Maria', 'Lopez', 'Argentina', 'Ingeniera', 'Activo');
+INSERT INTO ASTRONAUTA VALUES (3, 'Luis', 'Torres', 'Mexicana', 'Cientifico', 'Activo');
+
+INSERT INTO ROL_TRIPULACION VALUES (1, 'Comandante', 'Dirige la mision');
+INSERT INTO ROL_TRIPULACION VALUES (2, 'Piloto', 'Controla la nave');
+INSERT INTO ROL_TRIPULACION VALUES (3, 'Especialista', 'Apoya tareas tecnicas');
+
+INSERT INTO MISION VALUES (
+1,
+'Orbita Alfa',
+TO_DATE('2026-05-01', 'YYYY-MM-DD'),
+TO_DATE('2026-05-15', 'YYYY-MM-DD'),
+'Estudio de la orbita terrestre',
+1
+);
+
+INSERT INTO MISION VALUES (
+2,
+'Luna Beta',
+TO_DATE('2026-06-01', 'YYYY-MM-DD'),
+TO_DATE('2026-06-20', 'YYYY-MM-DD'),
+'Exploracion lunar',
+2
+);
+
+INSERT INTO TRIPULACION VALUES (1, 1, 1, 1);
+INSERT INTO TRIPULACION VALUES (2, 1, 2, 2);
+INSERT INTO TRIPULACION VALUES (3, 1, 3, 3);
+INSERT INTO TRIPULACION VALUES (4, 2, 1, 1);
+INSERT INTO TRIPULACION VALUES (5, 2, 2, 3);
+
+UPDATE ASTRONAUTA
+SET estado = 'Inactivo'
+WHERE id_astronauta = 3;
+
+DELETE FROM MISION
+WHERE id_mision = 1;
+
+INSERT INTO MISION VALUES (
+3,
+'Mision Fantasma',
+TO_DATE('2026-07-01', 'YYYY-MM-DD'),
+TO_DATE('2026-07-10', 'YYYY-MM-DD'),
+'Prueba de error',
+99
+);
 ```
 
 ---
 
 ## Script de Consultas SQL
 
-Este script contiene consultas utilizando:
-- IN
-- LIKE
-- BETWEEN
-- MAX
-- JOIN
+Las siguientes consultas fueron desarrolladas para demostrar el uso de diferentes operadores y funciones SQL.
 
-Archivo:
 ```sql
-consultas.sql
-```
+-- Consulta con IN
+SELECT *
+FROM ASTRONAUTA
+WHERE nacionalidad IN ('Ecuatoriana', 'Argentina');
 
+-- Consulta con LIKE
+SELECT *
+FROM MISION
+WHERE nombre LIKE 'Orbita%';
+
+-- Consulta con BETWEEN
+SELECT *
+FROM MISION
+WHERE fecha_inicio BETWEEN
+TO_DATE('2026-05-01', 'YYYY-MM-DD')
+AND TO_DATE('2026-06-30', 'YYYY-MM-DD');
+
+-- Consulta con MAX
+SELECT MAX(capacidad) AS capacidad_maxima
+FROM NAVE;
+
+-- Consulta JOIN
+SELECT m.nombre AS mision,
+       n.nombre AS nave,
+       a.nombre AS astronauta,
+       a.apellido AS apellido,
+       r.nombre AS rol
+FROM TRIPULACION t
+JOIN MISION m ON t.id_mision = m.id_mision
+JOIN ASTRONAUTA a ON t.id_astronauta = a.id_astronauta
+JOIN ROL_TRIPULACION r ON t.id_rol = r.id_rol
+JOIN NAVE n ON m.id_nave = n.id_nave;
+```
 ---
 
 # Evidencias
