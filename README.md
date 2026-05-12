@@ -161,6 +161,60 @@ En este proyecto se provocó el error al intentar insertar una misión con un id
 
 ---
 
+# Scripts SQL
+
+## Script DDL
+
+El script DDL fue desarrollado para crear todas las tablas necesarias del sistema Agencia Espacial.
+
+Incluye:
+- PRIMARY KEY
+- FOREIGN KEY
+- NOT NULL
+- UNIQUE
+- CHECK
+- ON DELETE CASCADE
+
+Archivo:
+```sql
+ddl.sql
+```
+
+---
+
+## Script DML
+
+El script DML contiene la inserción de registros válidos para probar el funcionamiento de la base de datos.
+
+También incluye:
+- INSERT válidos
+- UPDATE seguro
+- DELETE con integridad referencial
+- Error ORA-02291
+
+Archivo:
+```sql
+dml.sql
+```
+
+---
+
+## Script de Consultas SQL
+
+Este script contiene consultas utilizando:
+- IN
+- LIKE
+- BETWEEN
+- MAX
+- JOIN
+
+Archivo:
+```sql
+consultas.sql
+```
+
+---
+
 # Evidencias
 
 ## Desarrollo manual
@@ -178,11 +232,26 @@ En este proyecto se provocó el error al intentar insertar una misión con un id
 ![Consultas](consultas.jpg)
 
 ### ANÁLISIS PROFESIONAL
-![Consultas](analisis.jpg)
-
-
+![Analisis](analisis.jpg)
 
 ---
+
+# Capturas Oracle SQL
+
+## Creación de tablas
+![OracleDDL](oracle_ddl.jpg)
+
+## Inserción de registros
+![OracleInsert](oracle_insert.jpg)
+
+## Error ORA-02291
+![OracleError](oracle_error.jpg)
+
+## Consultas SQL ejecutadas
+![OracleConsultas](oracle_consultas.jpg)
+
+---
+
 
 # Conclusiones
 
