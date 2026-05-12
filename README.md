@@ -349,19 +349,19 @@ JOIN NAVE n ON m.id_nave = n.id_nave;
 ## Desarrollo manual
 
 ### Modelo lógico
-![Modelo](modelo.jpg)
+![Modelo](modelo.jpeg)
 
 ### Script DDL
-![DDL](ddl.jpg)
+![DDL](ddl.jpeg)
 
 ### Script DML
-![DML](dml.jpg)
+![DML](dml.jpeg)
 
 ### Consultas SQL
-![Consultas](consultas.jpg)
+![Consultas](consultas.jpeg)
 
 ### ANÁLISIS PROFESIONAL
-![Analisis](analisis.jpg)
+![Analisis](analisis.jpeg)
 
 ---
 
