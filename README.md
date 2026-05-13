@@ -368,16 +368,16 @@ JOIN NAVE n ON m.id_nave = n.id_nave;
 # Capturas Oracle SQL
 
 ## Creación de tablas
-![OracleDDL](oracle_ddl.jpg)
+![OracleDDL](OracleDDL.jpg)
 
 ## Inserción de registros
-![OracleInsert](oracle_insert.jpg)
+![OracleInsert](OracleInsert.jpg)
 
 ## Error ORA-02291
-![OracleError](oracle_error.jpg)
+![OracleError](OracleError.jpg)
 
 ## Consultas SQL ejecutadas
-![OracleConsultas](oracle_consultas.jpg)
+![OracleConsultas](OracleConsultas.jpg)
 
 ---
 
